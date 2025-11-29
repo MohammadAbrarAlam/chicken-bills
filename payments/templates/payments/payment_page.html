@@ -1,0 +1,40 @@
+{% extends "payments/base.html" %}
+{% block title %}Make Payment{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Generate UPI QR</div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          {{ form.amount.label_tag }}
+          {{ form.amount }}
+          <button class="btn btn-primary mt-3" type="submit">Generate QR & Invoice</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    {% if payment %}
+      <div class="card">
+        <div class="card-header">Payment Details</div>
+        <div class="card-body">
+          <p><strong>Txn:</strong> {{ payment.txn_id }}</p>
+          <p><strong>Amount:</strong> ₹{{ payment.amount }}</p>
+          {% if qr_url %}
+            <img src="{{ qr_url }}" width="240" alt="QR">
+          {% endif %}
+          <div class="mt-2">
+            <a class="btn btn-success" href="{{ upi_url }}">Pay via UPI app</a>
+            {% if payment.invoice_pdf %}
+              <a class="btn btn-outline-primary" href="{% url 'payments:download_invoice' payment.txn_id %}">Download Invoice (PDF)</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

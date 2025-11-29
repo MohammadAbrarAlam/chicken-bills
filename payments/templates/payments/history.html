@@ -1,0 +1,27 @@
+{% extends "payments/base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<h3>Transactions</h3>
+<table class="table table-striped">
+  <thead><tr><th>Txn</th><th>Date</th><th>Amount</th><th>QR</th><th>Invoice</th></tr></thead>
+  <tbody>
+    {% for p in payments %}
+    <tr>
+      <td>{{ p.txn_id }}</td>
+      <td>{{ p.created_at }}</td>
+      <td>₹{{ p.amount }}</td>
+      <td>
+        {% if p.qr_image %}
+          <img src="{{ p.qr_image.url }}" width="80">
+        {% endif %}
+      </td>
+      <td>
+        {% if p.invoice_pdf %}
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'payments:download_invoice' p.txn_id %}">Download</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
